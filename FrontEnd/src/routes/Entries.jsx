@@ -146,7 +146,9 @@ const Entries = () => {
       dataIndex: 'amount',
       key: 'amount',
       width: 150,
-      render: (val, record) => (<CostValue value={val} className={record.type === 'income' ? 'text-green-600' : 'text-red-500'} />),
+      render: (val, record) => (
+        <CostValue value={val} className={record.type === 'income' ? 'text-green-600' : 'text-red-500'} />
+      )
     }
   ];
 
@@ -252,7 +254,7 @@ const Entries = () => {
             ...(datePreset ? { dateFrom: getDateFrom(datePreset) } : {})
           })
             .then(data => setEntries(data))
-            .catch(() => { });
+            .catch(() => {});
         }}
         locale={{
           emptyText: (
