@@ -71,6 +71,25 @@
     "title": "Cookies disabilitati",
     "message": "Abilita i cookies per continuare"
   },
+  "entries": {
+    "title": "Diario",
+    "addEntry": "Aggiungi",
+    "expense": "Spesa",
+    "income": "Entrata",
+    "balance": "Saldo",
+    "totalIncome": "Totale Entrate",
+    "totalExpenses": "Totale Spese",
+    "amount": "Importo",
+    "date": "Data",
+    "noEntries": "Nessuna voce. Aggiungi la tua prima spesa o entrata!",
+    "categoryPlaceholder": "Seleziona o crea una categoria",
+    "lastWeek": "Ultima settimana",
+    "lastMonth": "Ultimo mese",
+    "lastQuarter": "Ultimo trimestre",
+    "lastYear": "Ultimo anno",
+    "allTime": "Tutto",
+    "chartTitle": "Entrate vs Spese"
+  },
   "validation": {
     "required": "Campo obbligatorio"
   }

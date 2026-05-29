@@ -71,6 +71,25 @@
     "title": "Cookies are disabled",
     "message": "Please enable cookies to navigate on this site"
   },
+  "entries": {
+    "title": "Diary",
+    "addEntry": "Add Entry",
+    "expense": "Expense",
+    "income": "Income",
+    "balance": "Balance",
+    "totalIncome": "Total Income",
+    "totalExpenses": "Total Expenses",
+    "amount": "Amount",
+    "date": "Date",
+    "noEntries": "No entries yet. Add your first expense or income!",
+    "categoryPlaceholder": "Select or create a category",
+    "lastWeek": "Last week",
+    "lastMonth": "Last month",
+    "lastQuarter": "Last quarter",
+    "lastYear": "Last year",
+    "allTime": "All time",
+    "chartTitle": "Income vs Expenses"
+  },
   "validation": {
     "required": "Required field"
   }
