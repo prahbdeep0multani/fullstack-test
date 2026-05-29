@@ -66,21 +66,7 @@ schema.plugin(dbFields, {
   fields: {
     public: ['_id', 'name', 'pic', 'lang', 'createdAt'],
     listing: ['_id', 'name', 'pic', 'type', 'createdAt'],
-    cp: [
-      '_id',
-      'name',
-      'pic',
-      'lang',
-      'zipcode',
-      'country',
-      'city',
-      'address',
-      'phone',
-      'vatNumber',
-      'type',
-      'updatedAt',
-      'createdAt'
-    ]
+    cp: ['_id', 'name', 'pic', 'lang', 'zipcode', 'country', 'city', 'address', 'phone', 'vatNumber', 'type', 'updatedAt', 'createdAt']
   },
   urls: ['pic'],
   parseUrl: (name, value) => {
@@ -122,10 +108,7 @@ schema.pre('save', function (next) {
 });
 
 schema.post('save', doc =>
-  mongoose.models.User.updateMany(
-    { 'company.id': doc._id, 'company.name': { $ne: doc.name } },
-    { 'company.name': doc.name }
-  )
+  mongoose.models.User.updateMany({ 'company.id': doc._id, 'company.name': { $ne: doc.name } }, { 'company.name': doc.name })
 );
 
 module.exports = mongoose.models.Company || mongoose.model('Company', schema);

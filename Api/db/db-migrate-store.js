@@ -20,10 +20,7 @@ class dbStore {
       .lean()
       .then(data => {
         if (!data) return fn(null, {});
-        if (
-          !Object.prototype.hasOwnProperty.call(data, 'lastRun') ||
-          !Object.prototype.hasOwnProperty.call(data, 'migrations')
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(data, 'lastRun') || !Object.prototype.hasOwnProperty.call(data, 'migrations')) {
           return fn(new Error('Invalid store file'));
         }
         return fn(null, data);

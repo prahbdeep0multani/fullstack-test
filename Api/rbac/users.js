@@ -13,8 +13,7 @@ const userRbac = async (caller, resourceId, { authorizedRoles = [], customCondit
   if (onHimself && resourceId?.toString() === _id?.toString()) return user;
   if (customCondition && customCondition(caller, user) === true) return user;
 
-  if (company?.id?.toString() === user?.company?.id?.toString() && intersection(authorizedRoles, roles).length)
-    return user;
+  if (company?.id?.toString() === user?.company?.id?.toString() && intersection(authorizedRoles, roles).length) return user;
   return false;
 };
 
@@ -22,11 +21,8 @@ module.exports.userRbac = userRbac;
 
 module.exports.canChangePassword = ({ email: userEmail }, email) => email === userEmail;
 
-module.exports.canGetUser = (caller, resourceId) =>
-  userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: true });
+module.exports.canGetUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: true });
 
-module.exports.canUpdateUser = (caller, resourceId) =>
-  userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: true });
+module.exports.canUpdateUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: true });
 
-module.exports.canDeleteUser = (caller, resourceId) =>
-  userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: false });
+module.exports.canDeleteUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: false });

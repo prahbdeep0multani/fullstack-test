@@ -15,10 +15,8 @@ const companyRbac = async (caller, resourceId, { authorizedRoles = [] }) => {
   return false;
 };
 
-module.exports.canGetCompany = (caller, resourceId) =>
-  companyRbac(caller, resourceId, { authorizedRoles: ['admin', 'user'] });
+module.exports.canGetCompany = (caller, resourceId) => companyRbac(caller, resourceId, { authorizedRoles: ['admin', 'user'] });
 
-module.exports.canUpdateCompany = (caller, resourceId) =>
-  companyRbac(caller, resourceId, { authorizedRoles: ['admin'] });
+module.exports.canUpdateCompany = (caller, resourceId) => companyRbac(caller, resourceId, { authorizedRoles: ['admin'] });
 
 module.exports.canDeleteCompany = (caller, resourceId) => companyRbac(caller, resourceId, {});

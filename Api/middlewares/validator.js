@@ -20,9 +20,7 @@ ajv.addKeyword({
     const invalidKeys = keys.filter(e => fieldsName.includes(e));
     if (!invalidKeys.length) return true;
 
-    validate.errors = [
-      { keyword: 'prohibited', message: 'Prohibited field', params: { prohibitedProperty: invalidKeys[0] } }
-    ];
+    validate.errors = [{ keyword: 'prohibited', message: 'Prohibited field', params: { prohibitedProperty: invalidKeys[0] } }];
     return false;
   },
   errors: true

@@ -8,8 +8,7 @@ const path = require('path');
 
 const { COMMON_EMAIL, COMMON_EMAIL_NAME } = require('../config');
 
-const { AWS_DEFAULT_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, ENV, SEND_EMAIL, TEST_EMAIL, Project } =
-  process.env;
+const { AWS_DEFAULT_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, ENV, SEND_EMAIL, TEST_EMAIL, Project } = process.env;
 
 const params = { region: AWS_DEFAULT_REGION };
 if (ENV === 'dev') {

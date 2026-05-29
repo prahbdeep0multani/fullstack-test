@@ -2,8 +2,7 @@ const { S3, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const { v1: uuidv1 } = require('uuid');
 
-const { AWS_DEFAULT_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_DATA, AWS_S3_BUCKET_TMP, ENV } =
-  process.env;
+const { AWS_DEFAULT_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_DATA, AWS_S3_BUCKET_TMP, ENV } = process.env;
 
 const params = {
   region: AWS_DEFAULT_REGION,

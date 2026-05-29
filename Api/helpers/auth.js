@@ -72,13 +72,9 @@ const clearTokens = res => {
 };
 
 const genereteChangePasswordToken = user => {
-  const token = jwt.sign(
-    { id: user._id, iat: Math.floor(Date.now() / 1000) },
-    `${process.env.CHANGE_PASSWORD_SECRET}${user.password}`,
-    {
-      expiresIn: parseInt(process.env.CHANGE_PASSWORD_EXPIRES_TIME)
-    }
-  );
+  const token = jwt.sign({ id: user._id, iat: Math.floor(Date.now() / 1000) }, `${process.env.CHANGE_PASSWORD_SECRET}${user.password}`, {
+    expiresIn: parseInt(process.env.CHANGE_PASSWORD_EXPIRES_TIME)
+  });
 
   return { token, expires: dayjs().add(process.env.CHANGE_PASSWORD_EXPIRES_TIME, 's').format() };
 };

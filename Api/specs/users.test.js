@@ -790,11 +790,7 @@ describe('Role: Admin', () => {
     test('Cannot update users from other companies', async () => {
       const tmpUser = await new User({ name: 'tmpUser', password: 'testtest' }).save();
 
-      return agent
-        .patch(`/users/${tmpUser.id}`)
-        .set('Cookie', `accessToken=${adminToken}`)
-        .send({ name: 'edit' })
-        .expect(401);
+      return agent.patch(`/users/${tmpUser.id}`).set('Cookie', `accessToken=${adminToken}`).send({ name: 'edit' }).expect(401);
     });
   });
 
@@ -1035,17 +1031,12 @@ describe('Role: User', () => {
         password: 'testest',
         company: { id: tmpCompany.id, roles: ['user'] }
       }).save();
-      return agent
-        .patch(`/users/${tmpUser.id}`)
-        .set('Cookie', `accessToken=${userToken}`)
-        .send({ name: 'edit' })
-        .expect(401);
+      return agent.patch(`/users/${tmpUser.id}`).set('Cookie', `accessToken=${userToken}`).send({ name: 'edit' }).expect(401);
     });
   });
 
   describe('DELETE /users', () => {
-    test('Delete himself not permitted', () =>
-      agent.delete(`/users/${user.id}`).set('Cookie', `accessToken=${userToken}`).expect(403));
+    test('Delete himself not permitted', () => agent.delete(`/users/${user.id}`).set('Cookie', `accessToken=${userToken}`).expect(403));
 
     test('Delete user of his company with failing', () =>
       agent.delete(`/users/${admin.id}`).set('Cookie', `accessToken=${userToken}`).expect(403));

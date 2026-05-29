@@ -17,9 +17,7 @@ router
   .patch(validator({ params: 'id', body: 'updateCompany' }), isAuth, rbac('companies', 'update'), controller.update)
   .delete(validator({ params: 'id' }), isAuth, rbac('companies', 'delete'), controller.delete);
 
-router
-  .route('/:id/invite')
-  .post(validator({ body: 'invite', params: 'id' }), isAuth, rbac('users', 'invite'), controller.inviteUser);
+router.route('/:id/invite').post(validator({ body: 'invite', params: 'id' }), isAuth, rbac('users', 'invite'), controller.inviteUser);
 
 router.route('/:id/pic').get(validator({ params: 'id' }), controller.getPic);
 

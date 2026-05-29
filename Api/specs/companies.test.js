@@ -145,10 +145,7 @@ describe('Role: superadmin', () => {
           expect(JSON.parse(nextKey)).toStrictEqual({ _id: expect.any(String), name: 'Company2' });
           expect(res.headers['x-total-count']).toBe('3');
 
-          return agent
-            .get(`/companies?sorter=name&nextKey=${nextKey}&limit=2&filter=c`)
-            .set('Cookie', `accessToken=${token}`)
-            .expect(200);
+          return agent.get(`/companies?sorter=name&nextKey=${nextKey}&limit=2&filter=c`).set('Cookie', `accessToken=${token}`).expect(200);
         })
         .then(res =>
           expect(res.body).toStrictEqual([
@@ -378,9 +375,7 @@ describe('Role: superadmin', () => {
             createdAt: expect.any(String)
           })
         )
-        .then(() =>
-          User.findById(tmpUser, { 'company.name': 1 }).then(data => expect(data.company.name).toBe('updated'))
-        );
+        .then(() => User.findById(tmpUser, { 'company.name': 1 }).then(data => expect(data.company.name).toBe('updated')));
     });
 
     test('Cannot change type', () =>
@@ -555,8 +550,7 @@ describe('Role: admin', () => {
   });
 
   describe('GET /companies', () => {
-    test('Get all companies not allowed', () =>
-      agent.get('/companies?sorter=name').set('Cookie', `accessToken=${token}`).expect(403));
+    test('Get all companies not allowed', () => agent.get('/companies?sorter=name').set('Cookie', `accessToken=${token}`).expect(403));
   });
 
   describe('POST /companies', () => {
@@ -588,8 +582,7 @@ describe('Role: admin', () => {
           })
         ));
 
-    test('Get another company not allowed', () =>
-      agent.get(`/companies/${company2.id}`).set('Cookie', `accessToken=${token}`).expect(401));
+    test('Get another company not allowed', () => agent.get(`/companies/${company2.id}`).set('Cookie', `accessToken=${token}`).expect(401));
   });
 
   describe('PATCH /companies/:id', () => {
@@ -626,8 +619,7 @@ describe('Role: admin', () => {
   });
 
   describe('DELETE /companies/:id', () => {
-    test('Cannot delete his company', () =>
-      agent.delete(`/companies/${company1.id}`).set('Cookie', `accessToken=${token}`).expect(403));
+    test('Cannot delete his company', () => agent.delete(`/companies/${company1.id}`).set('Cookie', `accessToken=${token}`).expect(403));
 
     test('Cannot delete another company', () =>
       agent.delete(`/companies/${company2.id}`).set('Cookie', `accessToken=${token}`).expect(403));
@@ -743,8 +735,7 @@ describe('Role: user', () => {
   });
 
   describe('GET /companies', () => {
-    test('Get all companies not allowed', () =>
-      agent.get('/companies?sorter=name').set('Cookie', `accessToken=${token}`).expect(403));
+    test('Get all companies not allowed', () => agent.get('/companies?sorter=name').set('Cookie', `accessToken=${token}`).expect(403));
   });
 
   describe('POST /companies', () => {
@@ -776,8 +767,7 @@ describe('Role: user', () => {
           })
         ));
 
-    test('Get another company not allowed', () =>
-      agent.get(`/companies/${company2.id}`).set('Cookie', `accessToken=${token}`).expect(401));
+    test('Get another company not allowed', () => agent.get(`/companies/${company2.id}`).set('Cookie', `accessToken=${token}`).expect(401));
   });
 
   describe('PATCH /companies/:id', () => {
@@ -797,8 +787,7 @@ describe('Role: user', () => {
   });
 
   describe('DELETE /companies/:id', () => {
-    test('Cannot delete his company', () =>
-      agent.delete(`/companies/${company1.id}`).set('Cookie', `accessToken=${token}`).expect(403));
+    test('Cannot delete his company', () => agent.delete(`/companies/${company1.id}`).set('Cookie', `accessToken=${token}`).expect(403));
 
     test('Cannot delete another company', () =>
       agent.delete(`/companies/${company2.id}`).set('Cookie', `accessToken=${token}`).expect(403));

@@ -91,10 +91,7 @@ module.exports.delete = async ({ params: { id } }, { locals: { user } }, next) =
       company: user.company.id
     };
 
-    await Promise.all([
-      targetCompany.softDelete(),
-      User.updateMany({ 'company.id': id }, { deleted: true, deletedAt: new Date() })
-    ]);
+    await Promise.all([targetCompany.softDelete(), User.updateMany({ 'company.id': id }, { deleted: true, deletedAt: new Date() })]);
 
     return next(SendData({ message: 'Company deleted successfully' }));
   } catch (err) {
