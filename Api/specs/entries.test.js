@@ -121,10 +121,18 @@ describe('Role: Admin', () => {
         }));
 
     test('Missing required type returns 400', () =>
-      agent.post(`/companies/${company1.id}/entries`).set('Cookie', `accessToken=${adminToken}`).send({ amount: 1000 }).expect(400));
+      agent
+        .post(`/companies/${company1.id}/entries`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .send({ amount: 1000 })
+        .expect(400));
 
     test('Missing required amount returns 400', () =>
-      agent.post(`/companies/${company1.id}/entries`).set('Cookie', `accessToken=${adminToken}`).send({ type: 'expense' }).expect(400));
+      agent
+        .post(`/companies/${company1.id}/entries`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .send({ type: 'expense' })
+        .expect(400));
 
     test('Invalid type value returns 400', () =>
       agent
@@ -161,6 +169,24 @@ describe('Role: Admin', () => {
           expect(res.body.length).toBe(2);
         });
     });
+
+    test('Filter with regex metacharacters returns 200 not 500', () =>
+      agent
+        .get(`/companies/${company1.id}/entries?filter=(((`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .expect(200)
+        .then(res => {
+          expect(Array.isArray(res.body)).toBe(true);
+        }));
+
+    test('Filter with invalid date returns 200 not 500', () =>
+      agent
+        .get(`/companies/${company1.id}/entries?dateFrom=not-a-date`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .expect(200)
+        .then(res => {
+          expect(Array.isArray(res.body)).toBe(true);
+        }));
   });
 
   describe('GET /companies/:id/entries/:entryId', () => {
@@ -187,7 +213,10 @@ describe('Role: Admin', () => {
     });
 
     test('Get non-existent entry returns 404', () =>
-      agent.get(`/companies/${company1.id}/entries/507f1f77bcf86cd799439011`).set('Cookie', `accessToken=${adminToken}`).expect(404));
+      agent
+        .get(`/companies/${company1.id}/entries/507f1f77bcf86cd799439011`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .expect(404));
 
     test('Get entry from another company returns 404', async () => {
       const otherCompany = await new Company({ name: 'Other', lang: 'EN' }).save();
@@ -204,7 +233,10 @@ describe('Role: Admin', () => {
         .set('Cookie', `accessToken=${otherToken}`)
         .send({ type: 'expense', amount: 500 });
 
-      return agent.get(`/companies/${company1.id}/entries/${createRes.body._id}`).set('Cookie', `accessToken=${adminToken}`).expect(404);
+      return agent
+        .get(`/companies/${company1.id}/entries/${createRes.body._id}`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .expect(404);
     });
   });
 
@@ -270,11 +302,17 @@ describe('Role: Admin', () => {
           expect(res.body.message).toBe('Entry deleted successfully');
         });
 
-      return agent.get(`/companies/${company1.id}/entries/${entryId}`).set('Cookie', `accessToken=${adminToken}`).expect(404);
+      return agent
+        .get(`/companies/${company1.id}/entries/${entryId}`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .expect(404);
     });
 
     test('Delete non-existent entry returns 404', () =>
-      agent.delete(`/companies/${company1.id}/entries/507f1f77bcf86cd799439011`).set('Cookie', `accessToken=${adminToken}`).expect(404));
+      agent
+        .delete(`/companies/${company1.id}/entries/507f1f77bcf86cd799439011`)
+        .set('Cookie', `accessToken=${adminToken}`)
+        .expect(404));
   });
 });
 
@@ -352,7 +390,10 @@ describe('Role: User', () => {
         .set('Cookie', `accessToken=${userToken}`)
         .send({ type: 'expense', amount: 500 });
 
-      return agent.delete(`/companies/${company1.id}/entries/${createRes.body._id}`).set('Cookie', `accessToken=${userToken}`).expect(200);
+      return agent
+        .delete(`/companies/${company1.id}/entries/${createRes.body._id}`)
+        .set('Cookie', `accessToken=${userToken}`)
+        .expect(200);
     });
 
     test("User cannot delete another user's entry", async () => {
@@ -361,7 +402,10 @@ describe('Role: User', () => {
         .set('Cookie', `accessToken=${adminToken}`)
         .send({ type: 'expense', amount: 1000 });
 
-      return agent.delete(`/companies/${company1.id}/entries/${createRes.body._id}`).set('Cookie', `accessToken=${userToken}`).expect(401);
+      return agent
+        .delete(`/companies/${company1.id}/entries/${createRes.body._id}`)
+        .set('Cookie', `accessToken=${userToken}`)
+        .expect(401);
     });
   });
 });

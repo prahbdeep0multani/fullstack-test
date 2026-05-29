@@ -2,6 +2,12 @@ const Entry = require('../models/entry');
 const { SendData, ServerError, NotFound, Unauthorized } = require('../helpers/response');
 const { canGetEntry, canUpdateEntry, canDeleteEntry } = require('../rbac/entries');
 const getter = require('../helpers/getter');
+const { escapeRegex } = require('../helpers/utils');
+
+const parseDate = str => {
+  const d = new Date(str);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
 
 const entryQuery = ({ type, dateFrom, dateTo, filter }) => {
   const query = {};
@@ -10,12 +16,15 @@ const entryQuery = ({ type, dateFrom, dateTo, filter }) => {
 
   if (dateFrom || dateTo) {
     query.date = {};
-    if (dateFrom) query.date.$gte = new Date(dateFrom);
-    if (dateTo) query.date.$lte = new Date(dateTo);
+    const from = dateFrom ? parseDate(dateFrom) : null;
+    const to = dateTo ? parseDate(dateTo) : null;
+    if (from) query.date.$gte = from;
+    if (to) query.date.$lte = to;
+    if (!from && !to) delete query.date;
   }
 
   if (filter) {
-    const regex = new RegExp(filter, 'i');
+    const regex = new RegExp(escapeRegex(filter), 'i');
     query.$or = [{ description: regex }, { category: regex }];
   }
 

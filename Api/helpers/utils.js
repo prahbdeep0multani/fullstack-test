@@ -1,3 +1,5 @@
+module.exports.escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 module.exports.setNestedValue = (obj, path, value) => {
   const keys = path.split('.');
   const lastKey = keys.pop();
