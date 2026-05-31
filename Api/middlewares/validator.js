@@ -1,9 +1,13 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
-const fs = require('fs');
-const path = require('path');
 const Ajv = require('ajv/dist/2019');
 const addFormats = require('ajv-formats');
+
+const schemaAuth = require('../schema/auth');
+const schemaCompany = require('../schema/company');
+const schemaEntry = require('../schema/entry');
+const schemaId = require('../schema/id');
+const schemaS3 = require('../schema/s3');
+const schemaTypes = require('../schema/types');
+const schemaUser = require('../schema/user');
 
 const { ServerError, ValidationError, MissingRequiredParameter, AdditionalParameters } = require('../helpers/response');
 
@@ -35,14 +39,9 @@ ajv.addKeyword({
   errors: false
 });
 
-const validatorPath = `${__dirname}/../schema/`;
-fs.readdirSync(validatorPath)
-  .filter(file => file.split('.')[1] === 'js')
-  .forEach(file => {
-    const f = path.parse(file).name;
-    const schema = require(`${validatorPath}${f}.js`);
-    Object.keys(schema).forEach(key => ajv.addSchema(schema[key], key));
-  });
+[schemaAuth, schemaCompany, schemaEntry, schemaId, schemaS3, schemaTypes, schemaUser].forEach(schema => {
+  Object.keys(schema).forEach(key => ajv.addSchema(schema[key], key));
+});
 
 const errorParser = data => {
   const [error] = data;

@@ -1,15 +1,19 @@
 {
   "users": {
-    "create:any": ["*"],
-    "read:any": ["*"],
-    "update:any": ["*"],
-    "delete:any": ["*"],
-    "invite:any": ["*"]
+    "create": ["*"],
+    "read": ["*"],
+    "update": ["*"],
+    "delete": ["*"],
+    "invite": ["*"]
   },
   "companies": {
-    "create:any": ["*"],
-    "read:any": ["*"],
-    "update:any": ["*"],
-    "delete:any": ["*"]
+    "read": ["*"],
+    "update": ["*"]
+  },
+  "entries": {
+    "read": ["*"],
+    "create": ["*"],
+    "update": ["*"],
+    "delete": ["*"]
   }
 }

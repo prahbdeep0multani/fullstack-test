@@ -17,7 +17,7 @@ module.exports = (schema, options) => {
 
   schema.statics.getFields = getFields;
   schema.statics.getUrls = options.urls || [];
-  schema.statics.parseUrl = options.parseUrl ? options.parseUrl : (name, value) => value;
+  schema.statics.parseUrl = options.parseUrl ? options.parseUrl : (_, value) => value;
 
   schema.statics.getProjectFields = function (fields) {
     return schema.statics.getFields(fields).reduce((acc, item) => {
@@ -72,8 +72,7 @@ module.exports = (schema, options) => {
     return res;
   });
 
-  // eslint-disable-next-line prefer-arrow-callback
-  schema.post('aggregate', function (res, next) {
+  schema.post('aggregate', (res, next) => {
     if (res.length > 0)
       res.forEach((doc, index, theArray) => {
         const newDoc = parseObj(doc, {});

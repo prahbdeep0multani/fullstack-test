@@ -21,8 +21,8 @@ module.exports.userRbac = userRbac;
 
 module.exports.canChangePassword = ({ email: userEmail }, email) => email === userEmail;
 
-module.exports.canGetUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: true });
+module.exports.canGetUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['superuser'], onHimself: true });
 
-module.exports.canUpdateUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: true });
+module.exports.canUpdateUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['superuser'], onHimself: true });
 
-module.exports.canDeleteUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['admin'], onHimself: false });
+module.exports.canDeleteUser = (caller, resourceId) => userRbac(caller, resourceId, { authorizedRoles: ['superuser'], onHimself: false });

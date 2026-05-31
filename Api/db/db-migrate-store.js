@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
@@ -15,7 +14,7 @@ const Migration = require('../models/migration');
 require('./connect');
 
 class dbStore {
-  load(fn) {
+  static load(fn) {
     return Migration.findOne({})
       .lean()
       .then(data => {
@@ -28,7 +27,7 @@ class dbStore {
       .catch(fn);
   }
 
-  save(set, fn) {
+  static save(set, fn) {
     return Migration.updateOne(
       {},
       {

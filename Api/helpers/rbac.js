@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
 const fs = require('fs');
 const path = require('path');
 
@@ -11,8 +9,7 @@ const grants = fs
   .filter(file => file.split('.')[1] === 'json')
   .reduce((acc, file) => {
     const f = path.parse(file).name;
-    acc[f] = require(`${grantPath}${f}.json`);
-    return acc;
+    return { ...acc, [f]: JSON.parse(fs.readFileSync(`${grantPath}${f}.json`, 'utf8')) };
   }, {});
 
 exports.check = ({ company = {}, roles: globalRoles = [] }, resources, action) =>
@@ -65,7 +62,6 @@ exports.check = ({ company = {}, roles: globalRoles = [] }, resources, action) =
   });
 
 module.exports.getMaxRole = roles => {
-  if (roles.includes('superadmin')) return 'superadmin';
-  if (roles.includes('admin')) return 'admin';
+  if (roles.includes('superuser')) return 'superuser';
   return false;
 };

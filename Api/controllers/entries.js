@@ -42,7 +42,7 @@ module.exports.get = async (req, res, next) => {
     const query = entryQuery(req.query);
     query['company.id'] = companyId;
 
-    if (!roles.includes('admin') && !roles.includes('superuser')) {
+    if (!roles.includes('superuser')) {
       query.createdBy = user.id;
     }
 

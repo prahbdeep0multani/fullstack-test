@@ -1,7 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable no-undef */
 const { SESClient, SendTemplatedEmailCommand } = require('@aws-sdk/client-ses');
 const fs = require('fs');
 const path = require('path');
@@ -25,15 +21,14 @@ const emailLangs = fs
   .filter(dir => dir.isDirectory())
   .reduce((langs, dir) => {
     const lang = dir.name;
-    langs[lang] = fs
+    const langAcc = fs
       .readdirSync(localesPath + lang + '/')
       .filter(file => file.split('.')[1] === 'json')
       .reduce((acc, file) => {
         const f = path.parse(file).name;
-        acc[f] = require(`${localesPath}${lang}/${f}.json`);
-        return acc;
+        return { ...acc, [f]: JSON.parse(fs.readFileSync(`${localesPath}${lang}/${f}.json`, 'utf8')) };
       }, {});
-    return langs;
+    return { ...langs, [lang]: langAcc };
   }, {});
 
 module.exports.getEmailText = (lang, email) => emailLangs[lang.toLowerCase()][email];
@@ -43,11 +38,11 @@ module.exports.send = async ({ template = 'common', to = ['design@meblabs.com'],
 
   if (SEND_EMAIL !== '1') {
     if (ENV !== 'test') {
-      console.log('[SEND EMAIL]');
-      console.log('- template:', template);
-      console.log('- to:', to);
-      console.log('- subject:', subject);
-      console.log('- body:', body);
+      console.warn('[SEND EMAIL]');
+      console.warn('- template:', template);
+      console.warn('- to:', to);
+      console.warn('- subject:', subject);
+      console.warn('- body:', body);
     }
     return Promise.resolve();
   }

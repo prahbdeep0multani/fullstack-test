@@ -1,8 +1,4 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const socketIo = require('socket.io');
@@ -19,6 +15,13 @@ const { SendData, NotFound } = require('./helpers/response');
 const swaggerSpec = require('./helpers/swagger');
 const checkCompany = require('./middlewares/checkCompany');
 const { isAuth } = require('./middlewares/isAuth');
+
+const routeAuth = require('./routes/auth');
+const routeCompanies = require('./routes/companies');
+const routeS3 = require('./routes/s3');
+const routeUsers = require('./routes/users');
+const routeCEntries = require('./routes/c_entries');
+const routeCUsers = require('./routes/c_users');
 
 const app = express();
 
@@ -49,24 +52,29 @@ app.get('/', (req, res, next) => next(SendData({ message: 'RestAPI is alive!' })
 
 const excludedPaths = [];
 
-// dynamic routes for express
-fs.readdirSync(path.join(__dirname, '/routes'))
-  .filter(file => file.indexOf('.') !== 0 && file.slice(-3) === '.js')
-  .forEach(file => {
-    const f = path.parse(file).name;
-    if (f.startsWith('c_'))
-      app.use(
-        `/companies/:companyId/${f.slice(2)}`,
-        validator({ params: 'companyId' }),
-        (req, res, next) => isAuth(req, res, next, { excludedPaths }),
-        checkCompany({ excludedPaths }),
-        require(`./routes/${f}`)
-      );
-    else app.use(`/${f}`, require(`./routes/${f}`));
-  });
+const routes = {
+  auth: routeAuth,
+  companies: routeCompanies,
+  s3: routeS3,
+  users: routeUsers,
+  c_entries: routeCEntries,
+  c_users: routeCUsers
+};
 
-app.all('*', (req, res, next) => next(NotFound()));
+Object.entries(routes).forEach(([f, router]) => {
+  if (f.startsWith('c_'))
+    app.use(
+      `/companies/:companyId/${f.slice(2)}`,
+      validator({ params: 'companyId' }),
+      (req, res, next) => isAuth(req, res, next, { excludedPaths }),
+      checkCompany({ excludedPaths }),
+      router
+    );
+  else app.use(`/${f}`, router);
+});
 
-app.use((toSend, req, res, next) => response(toSend, res));
+app.all('*', (_req, _res, next) => next(NotFound()));
+
+app.use((toSend, _req, res, _next) => response(toSend, res));
 
 module.exports = server;

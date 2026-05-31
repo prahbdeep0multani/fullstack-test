@@ -20,8 +20,8 @@ const entryRbac = async (caller, resourceId, { authorizedRoles = [] }) => {
   return false;
 };
 
-module.exports.canGetEntry = (caller, resourceId) => entryRbac(caller, resourceId, { authorizedRoles: ['admin'] });
+module.exports.canGetEntry = (caller, resourceId) => entryRbac(caller, resourceId, { authorizedRoles: ['superuser'] });
 
-module.exports.canUpdateEntry = (caller, resourceId) => entryRbac(caller, resourceId, { authorizedRoles: ['admin'] });
+module.exports.canUpdateEntry = (caller, resourceId) => entryRbac(caller, resourceId, { authorizedRoles: ['superuser'] });
 
-module.exports.canDeleteEntry = (caller, resourceId) => entryRbac(caller, resourceId, { authorizedRoles: ['admin'] });
+module.exports.canDeleteEntry = (caller, resourceId) => entryRbac(caller, resourceId, { authorizedRoles: ['superuser'] });
