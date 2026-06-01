@@ -1,4 +1,4 @@
-import { createContext, useCallback } from 'react';
+import { createContext, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { message } from 'antd';
 import { v4 } from 'uuid';
@@ -37,16 +37,13 @@ export const MessageProvider = props => {
 
   const destroyMsg = useCallback(key => messageApi.destroy(key));
 
+  const contextValue = useMemo(
+    () => ({ loadingMsg, savedMsg, errorMsg, destroyMsg }),
+    [loadingMsg, savedMsg, errorMsg, destroyMsg]
+  );
+
   return (
-    <MessageContext.Provider
-      // eslint-disable-next-line react/jsx-no-constructed-context-values
-      value={{
-        loadingMsg,
-        savedMsg,
-        errorMsg,
-        destroyMsg
-      }}
-    >
+    <MessageContext.Provider value={contextValue}>
       {contextHolder}
       {props.children}
     </MessageContext.Provider>

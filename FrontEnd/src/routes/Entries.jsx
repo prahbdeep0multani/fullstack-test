@@ -1,18 +1,25 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ArrowDownOutlined, ArrowUpOutlined, PlusOutlined, WalletOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Empty, Row, Segmented, Select, Statistic, Tag, Typography } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Empty, Input, Popconfirm, Table, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 
-import ContentPanel from '../components/core/layout/ContentPanel';
-import Table from '../components/core/table/Table';
-import CostValue from '../components/core/controls/CostValue';
 import EntryForm from '../components/entries/EntryForm';
 import MessageContext from '../helpers/core/MessageContext';
 import useEntries from '../hooks/useEntries';
-
-const { Text } = Typography;
-const { Option } = Select;
+import AppContext from '../helpers/AppContext';
+import {
+  EYEBROW,
+  EYEBROW_SM,
+  PAGE,
+  PAGE_MOBILE,
+  PAGE_TITLE,
+  PILL_ACTIVE,
+  PILL_BASE,
+  PILL_INACTIVE,
+  SUB_NUMBER,
+  fmtCents
+} from '../helpers/editorial';
 
 const DATE_PRESETS = [
   { label: 'lastWeek', days: 7 },
@@ -28,6 +35,7 @@ const getDateFrom = preset => {
 
 const Entries = () => {
   const { t } = useTranslation();
+  const { isMobile } = useContext(AppContext);
   const { loadingMsg, savedMsg, errorMsg } = useContext(MessageContext);
   const { fetchEntries, createEntry, updateEntry, deleteEntry } = useEntries();
 
@@ -37,28 +45,29 @@ const Entries = () => {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [typeFilter, setTypeFilter] = useState(null);
   const [datePreset, setDatePreset] = useState(null);
+  const [search, setSearch] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const load = useCallback(
-    (extra = {}) => {
-      setLoading(true);
-      fetchEntries({
-        sorter: '-date',
-        ...(typeFilter ? { type: typeFilter } : {}),
-        ...(datePreset ? { dateFrom: getDateFrom(datePreset) } : {}),
-        ...extra
+  const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
+
+  const load = useCallback(() => {
+    setLoading(true);
+    fetchEntries({
+      sorter: '-date',
+      ...(typeFilter ? { type: typeFilter } : {}),
+      ...(datePreset ? { dateFrom: getDateFrom(datePreset) } : {}),
+      ...(search ? { filter: search } : {})
+    })
+      .then(data => {
+        setEntries(data);
+        setLoading(false);
       })
-        .then(data => {
-          setEntries(data);
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
-    },
-    [fetchEntries, typeFilter, datePreset]
-  );
+      .catch(() => setLoading(false));
+  }, [fetchEntries, typeFilter, datePreset, search]);
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [load, refreshKey]);
 
   const totals = useMemo(() => {
     const totalIncome = entries.filter(e => e.type === 'income').reduce((sum, e) => sum + e.amount, 0);
@@ -83,7 +92,7 @@ const Entries = () => {
     return deleteEntry(record._id)
       .then(() => {
         savedMsg(msg);
-        load();
+        refresh();
       })
       .catch(err => errorMsg(msg, err));
   };
@@ -95,7 +104,7 @@ const Entries = () => {
       .then(() => {
         savedMsg(msg);
         setModalOpen(false);
-        load();
+        refresh();
       })
       .catch(err => {
         errorMsg(msg, err);
@@ -103,163 +112,205 @@ const Entries = () => {
       });
   };
 
-  const columns = [
-    {
-      title: t('entries.date'),
-      dataIndex: 'date',
-      key: 'date',
-      render: val => <Text className="whitespace-nowrap font-mono text-sm">{dayjs(val).format('DD/MM/YYYY')}</Text>,
-      width: 120
-    },
-    {
-      title: t('common.type'),
-      dataIndex: 'type',
-      key: 'type',
-      width: 120,
-      render: val =>
-        val === 'income' ? (
-          <Tag icon={<ArrowUpOutlined />} color="success">
-            {t('entries.income')}
-          </Tag>
-        ) : (
-          <Tag icon={<ArrowDownOutlined />} color="error">
-            {t('entries.expense')}
-          </Tag>
-        )
-    },
-    {
-      title: t('common.description'),
-      dataIndex: 'description',
-      key: 'description',
-      ellipsis: true
-    },
-    {
-      title: t('common.category'),
-      dataIndex: 'category',
-      key: 'category',
-      width: 130,
-      ellipsis: true,
-      render: val => (val ? <Tag>{val}</Tag> : null)
-    },
-    {
-      title: t('entries.amount'),
-      dataIndex: 'amount',
-      key: 'amount',
-      width: 150,
-      render: (val, record) => (
-        <CostValue value={val} className={record.type === 'income' ? 'text-green-600' : 'text-red-500'} />
-      )
-    }
-  ];
+  const renderPill = ({ label, value }, group, onChange) => {
+    const active = group === value;
+    return (
+      <button
+        key={value || 'all'}
+        type="button"
+        onClick={() => onChange(value)}
+        className={`${PILL_BASE} ${active ? PILL_ACTIVE : PILL_INACTIVE}`}
+      >
+        {label}
+      </button>
+    );
+  };
 
-  const balanceColor = totals.balance >= 0 ? '#3f8600' : '#cf1322';
-
-  const statCards = [
-    {
-      key: 'income',
-      title: t('entries.totalIncome'),
-      value: totals.totalIncome / 100,
-      color: '#3f8600',
-      border: 'border-l-green-500',
-      icon: <ArrowUpOutlined className="text-2xl text-green-500" />
-    },
-    {
-      key: 'expense',
-      title: t('entries.totalExpenses'),
-      value: totals.totalExpenses / 100,
-      color: '#cf1322',
-      border: 'border-l-red-500',
-      icon: <ArrowDownOutlined className="text-2xl text-red-500" />
-    },
-    {
-      key: 'balance',
-      title: t('entries.balance'),
-      value: totals.balance / 100,
-      color: balanceColor,
-      border: totals.balance >= 0 ? 'border-l-blue-500' : 'border-l-orange-400',
-      icon: <WalletOutlined className="text-2xl text-blue-500" />
-    }
-  ];
-
-  const segmentedOptions = [
+  const periodOptions = [
     { label: t('entries.allTime'), value: '' },
     ...DATE_PRESETS.map(p => ({ label: t(`entries.${p.label}`), value: p.label }))
   ];
 
-  const typeFilterNode = (
-    <Select
-      allowClear
-      placeholder={t('common.type')}
-      style={{ width: 140 }}
-      onChange={val => setTypeFilter(val || null)}
-      value={typeFilter}
-    >
-      <Option value="expense">
-        <span className="flex items-center gap-1">
-          <ArrowDownOutlined className="text-red-500" /> {t('entries.expense')}
+  const typeOptions = [
+    { label: t('common.type'), value: '' },
+    { label: t('entries.income'), value: 'income' },
+    { label: t('entries.expense'), value: 'expense' }
+  ];
+
+  const eyebrowHeader = label => <span className={EYEBROW_SM}>{label}</span>;
+
+  const columns = [
+    {
+      title: eyebrowHeader(t('entries.date')),
+      dataIndex: 'date',
+      key: 'date',
+      width: 110,
+      render: val => <span className="text-ink-2 font-sans text-xs">{dayjs(val).format('DD MMM YYYY')}</span>
+    },
+    {
+      title: eyebrowHeader(t('common.type')),
+      dataIndex: 'type',
+      key: 'type',
+      width: 90,
+      render: val => (
+        <span
+          className={`inline-flex items-center gap-1.5 font-sans text-[11px] font-medium uppercase tracking-[0.06em] ${
+            val === 'income' ? 'text-income' : 'text-expense'
+          }`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${val === 'income' ? 'bg-income' : 'bg-expense'}`} />
+          {t(`entries.${val}`)}
         </span>
-      </Option>
-      <Option value="income">
-        <span className="flex items-center gap-1">
-          <ArrowUpOutlined className="text-green-600" /> {t('entries.income')}
+      )
+    },
+    {
+      title: eyebrowHeader(t('common.description')),
+      dataIndex: 'description',
+      key: 'description',
+      ellipsis: true,
+      render: val => <span className="text-ink font-sans text-sm">{val || '—'}</span>
+    },
+    {
+      title: eyebrowHeader(t('common.category')),
+      dataIndex: 'category',
+      key: 'category',
+      width: 130,
+      ellipsis: true,
+      render: val =>
+        val ? <span className="text-ink-3 font-sans text-[10px] uppercase tracking-[0.08em]">{val}</span> : null
+    },
+    {
+      title: <span className={`${EYEBROW_SM} block text-right`}>{t('entries.amount')}</span>,
+      dataIndex: 'amount',
+      key: 'amount',
+      width: 130,
+      align: 'right',
+      render: (val, record) => (
+        <span
+          className={`font-serif text-[17px] font-semibold ${
+            record.type === 'income' ? 'text-income' : 'text-expense'
+          }`}
+        >
+          {record.type === 'income' ? '+' : '−'} €{fmtCents(val)}
         </span>
-      </Option>
-    </Select>
-  );
+      )
+    },
+    {
+      title: '',
+      key: 'actions',
+      width: 80,
+      align: 'right',
+      render: (_, record) => (
+        <span className="inline-flex gap-1">
+          <Tooltip title={t('common.edit')}>
+            <Button type="text" size="small" onClick={() => handleEdit(record)}>
+              <span className="text-ink-3 text-[10px] tracking-[0.08em]">EDIT</span>
+            </Button>
+          </Tooltip>
+          <Popconfirm
+            title={t('common.sureToDelete')}
+            okText={t('common.yes')}
+            cancelText={t('common.no')}
+            placement="left"
+            onConfirm={() => handleDelete(record)}
+          >
+            <Tooltip title={t('common.delete')}>
+              <Button type="text" size="small" danger>
+                <span className="text-[10px] tracking-[0.08em]">DEL</span>
+              </Button>
+            </Tooltip>
+          </Popconfirm>
+        </span>
+      )
+    }
+  ];
+
+  const isPositive = totals.balance >= 0;
 
   return (
-    <ContentPanel
-      title={t('entries.title')}
-      titleAction={
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+    <div className={isMobile ? PAGE_MOBILE : PAGE}>
+      {/* ── Header ── */}
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
+        <div>
+          <div className={`${EYEBROW} mb-1.5`}>{t('entries.title')}</div>
+          <div className={PAGE_TITLE}>{t('entries.title')}</div>
+        </div>
+        <Button
+          type="primary"
+          size="large"
+          icon={<PlusOutlined />}
+          onClick={handleAdd}
+          className="!h-10 !font-sans !text-[13px] !tracking-[0.04em]"
+        >
           {t('entries.addEntry')}
         </Button>
-      }
-    >
-      <div className="mb-4">
-        <Segmented options={segmentedOptions} value={datePreset || ''} onChange={val => setDatePreset(val || null)} />
       </div>
 
-      <Row gutter={[16, 16]} className="mb-6">
-        {statCards.map(({ key, title, value, color, border, icon }) => (
-          <Col key={key} xs={24} sm={8}>
-            <Card className={`rounded-lg border-l-4 shadow-sm ${border}`}>
-              <div className="flex items-center justify-between">
-                <Statistic title={title} value={value} precision={2} valueStyle={{ color }} suffix="€" />
-                {icon}
-              </div>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      {/* ── Totals ── */}
+      <div className="border-edge-2 mb-7 flex flex-wrap items-end gap-8 border-b pb-7">
+        <div>
+          <div className={`${EYEBROW_SM} mb-1.5`}>{t('entries.balance')}</div>
+          <div
+            className={`font-serif text-[clamp(40px,5vw,56px)] font-light leading-none -tracking-[0.02em] ${
+              isPositive ? 'text-income' : 'text-expense'
+            }`}
+          >
+            {isPositive ? '+' : '−'} €{fmtCents(totals.balance)}
+          </div>
+        </div>
+        <div className="flex items-end gap-6">
+          <div>
+            <div className={`${EYEBROW_SM} mb-1`}>↑ {t('entries.totalIncome')}</div>
+            <div className={`${SUB_NUMBER} text-income`}>€{fmtCents(totals.totalIncome)}</div>
+          </div>
+          <div className="bg-edge-2 w-px self-stretch" />
+          <div>
+            <div className={`${EYEBROW_SM} mb-1`}>↓ {t('entries.totalExpenses')}</div>
+            <div className={`${SUB_NUMBER} text-expense`}>€{fmtCents(totals.totalExpenses)}</div>
+          </div>
+        </div>
+      </div>
 
+      {/* ── Filters ── */}
+      <div className="mb-6 flex flex-col gap-3.5">
+        <div>
+          <div className={`${EYEBROW_SM} mb-2`}>{t('common.filter')} · period</div>
+          <div className="flex flex-wrap gap-1.5">
+            {periodOptions.map(opt => renderPill(opt, datePreset || '', v => setDatePreset(v || null)))}
+          </div>
+        </div>
+
+        <div>
+          <div className={`${EYEBROW_SM} mb-2`}>{t('common.type')}</div>
+          <div className="flex flex-wrap gap-1.5">
+            {typeOptions.map(opt => renderPill(opt, typeFilter || '', v => setTypeFilter(v || null)))}
+          </div>
+        </div>
+
+        <Input
+          allowClear
+          prefix={<SearchOutlined className="text-ink-3" />}
+          placeholder={t('common.filter')}
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="!bg-fill !max-w-[360px] !rounded-lg !border-none !font-sans"
+        />
+      </div>
+
+      {/* ── Table ── */}
       <Table
         dataSource={entries}
         columns={columns}
         rowKey="_id"
         loading={loading}
-        editCancelButtonOnRow
-        deleteSaveButtonOnRow
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        pagination
-        searchBar
-        leftActions={typeFilterNode}
-        onChangeSearchBar={e => {
-          const val = e.target.value;
-          fetchEntries({
-            sorter: '-date',
-            filter: val,
-            ...(typeFilter ? { type: typeFilter } : {}),
-            ...(datePreset ? { dateFrom: getDateFrom(datePreset) } : {})
-          })
-            .then(data => setEntries(data))
-            .catch(() => {});
-        }}
+        pagination={{ pageSize: 20, showSizeChanger: false, simple: isMobile }}
+        showSorterTooltip={false}
+        size="middle"
+        className="!bg-transparent !font-sans"
         locale={{
           emptyText: (
             <Empty
-              description={<Text type="secondary">{t('entries.noEntries')}</Text>}
+              description={<span className="text-ink-3 font-serif text-sm italic">{t('entries.noEntries')}</span>}
               image={Empty.PRESENTED_IMAGE_SIMPLE}
             />
           )
@@ -273,7 +324,7 @@ const Entries = () => {
         onCancel={() => setModalOpen(false)}
         categories={categories}
       />
-    </ContentPanel>
+    </div>
   );
 };
 

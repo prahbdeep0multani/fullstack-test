@@ -34,13 +34,11 @@ const PhoneInput = ({
     () =>
       !countries
         ? prefixes
-        : Object.keys(prefixes).reduce((result, key) => {
-            if (countries.map(c => c.toUpperCase()).includes(key)) {
-              // eslint-disable-next-line no-param-reassign
-              result[key] = prefixes[key];
-            }
-            return result;
-          }, {}),
+        : Object.keys(prefixes).reduce(
+            (result, key) =>
+              countries.map(c => c.toUpperCase()).includes(key) ? { ...result, [key]: prefixes[key] } : result,
+            {}
+          ),
     [countries]
   );
 
@@ -127,7 +125,7 @@ const PhoneInput = ({
   return (
     <Input
       addonBefore={selectBefore}
-      style={{ width: '100%' }}
+      className="w-full"
       placeholder={placeholder}
       onChange={e => handleNumberChange(e.target.value)}
       value={value?.number || ''}

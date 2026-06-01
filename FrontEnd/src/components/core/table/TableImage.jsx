@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

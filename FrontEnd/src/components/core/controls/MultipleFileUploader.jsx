@@ -67,7 +67,7 @@ const MultipleFileUploader = ({ initFileList = [], onChange, parentId, parentTyp
 
   const itemRender = (originNode, file, list, actions) => {
     if (file.disabled) {
-      return <div style={{ opacity: '0.5', cursor: 'not-allowed' }}>{originNode}</div>;
+      return <div className="cursor-not-allowed opacity-50">{originNode}</div>;
     }
     return <div>{originNode}</div>;
   };

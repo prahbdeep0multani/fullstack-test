@@ -26,15 +26,8 @@ const CountrySelect = ({ value = '', onChange, className, limit }) => {
       return true;
     })
     .sort((a, b) => {
-      if (limit) {
-        // eslint-disable-next-line no-nested-ternary
-        return a.label.toLowerCase() < b.label.toLowerCase()
-          ? -1
-          : a.label.toLowerCase() > b.label.toLowerCase()
-            ? 1
-            : 0;
-      }
-      return true;
+      if (limit) return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+      return 0;
     });
 
   const filterHandler = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());

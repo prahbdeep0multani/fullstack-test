@@ -83,7 +83,7 @@ const MultipleImagesUploader = ({ initFileList = [], onChange }) => {
           <div>{t('common.upload')}</div>
         </div>
       </Upload>
-      <div style={{ display: 'none' }}>
+      <div className="hidden">
         <Image.PreviewGroup
           preview={{
             visible,

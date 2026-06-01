@@ -7,13 +7,13 @@ import { light, dark } from '../../theme/ant.config';
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 const ThemeProvider = ({ children }) => {
-  const { darkMode } = useContext(AppContext);
+  const { appTheme } = useContext(AppContext);
 
-  if (darkMode) document.body.classList.add('dark');
+  if (appTheme) document.body.classList.add('dark');
   else document.body.classList.remove('dark');
 
   return (
-    <ConfigProvider theme={{ algorithm: darkMode ? darkAlgorithm : defaultAlgorithm, ...(darkMode ? dark : light) }}>
+    <ConfigProvider theme={{ algorithm: appTheme ? darkAlgorithm : defaultAlgorithm, ...(appTheme ? dark : light) }}>
       <App>{children}</App>
     </ConfigProvider>
   );

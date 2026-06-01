@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +37,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const retryRT = (prevRequest, error) => {
     try {
-      prevRequest.__isRetryRequest = true;
+      const retryRequest = { ...prevRequest, __isRetryRequest: true };
 
       if (!refreshTokenPromise) {
         refreshTokenPromise = Api.get('/auth/rt')
@@ -54,7 +53,7 @@ export const AuthContextProvider = ({ children }) => {
           .catch(err => Promise.reject(error));
       }
 
-      return refreshTokenPromise.then(() => Api(prevRequest));
+      return refreshTokenPromise.then(() => Api(retryRequest));
     } catch (err) {
       return signOut();
     }
@@ -93,7 +92,10 @@ export const AuthContextProvider = ({ children }) => {
   }, [authStatus]);
 
   useEffect(() => {
-    if (logged?.lang) i18n.changeLanguage(logged.lang.toLowerCase());
+    if (logged?.lang) {
+      const savedLang = window.localStorage.getItem('lang');
+      i18n.changeLanguage(savedLang || logged.lang.toLowerCase());
+    }
   }, [logged]);
 
   const exportedValue = useMemo(

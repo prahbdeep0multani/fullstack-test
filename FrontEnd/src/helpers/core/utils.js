@@ -4,9 +4,8 @@ const arrayEquals = (a, b) =>
 const classNames = (...classes) => classes.filter(Boolean).join(' ');
 
 const intersection = (a = [], b = []) => {
-  // eslint-disable-next-line no-param-reassign
-  b = new Set(b);
-  return [...new Set(a)].filter(e => b.has(e));
+  const bSet = new Set(b);
+  return [...new Set(a)].filter(e => bSet.has(e));
 };
 
 const handleTableChange = setSorter => (pagination, filters, sorterParam) => {

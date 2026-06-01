@@ -9,8 +9,8 @@ const Unauthorized = () => {
   return (
     <Result
       status="403"
-      title="Unauthorized"
-      subTitle="Sorry, you are not authorized to access this page."
+      title={t('common.unauthorized')}
+      subTitle={t('common.unauthorizedSub')}
       extra={
         <Button type="primary">
           <Link to="/">{t('common.back')}</Link>

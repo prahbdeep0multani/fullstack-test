@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useContext, memo } from 'react';
 import { Drawer, Button, Row, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -14,16 +14,8 @@
 
 /* SIDEBAR */
 .ant-layout-sider {
-  display: none;
-
   & .ant-layout-sider-trigger {
     background-color: transparent !important;
-  }
-}
-
-@media screen and (min-width: theme('screens.md')) {
-  .ant-layout-sider {
-    display: block;
   }
 }
 

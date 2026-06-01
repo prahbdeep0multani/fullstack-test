@@ -1,7 +1,6 @@
-/* eslint-disable no-nested-ternary */
 import { useState, useContext, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { Layout, Button, Row, Col, theme } from 'antd';
+import { Layout, Button, Row, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,8 +13,6 @@ import logo from '../../../img/logo.svg';
 import MobileDrawer from './MobileDrawer';
 import AuthContext from '../../../helpers/core/AuthContext';
 
-const { useToken } = theme;
-
 const { Header } = Layout;
 
 const HeaderComponent = props => {
@@ -23,15 +20,9 @@ const HeaderComponent = props => {
   const { isMobile } = useContext(AppContext);
   const [showMobileDrawer, setShowMobileDrawer] = useState(false);
 
-  const { token } = useToken();
-
   return (
     <>
-      <Header
-        id="topbar"
-        style={{ backgroundColor: token.colorBgContainer, borderBottom: '1px solid ' + token.colorBorder }}
-        className="sticky top-0 z-50 h-16 px-4"
-      >
+      <Header id="topbar" className="border-edge bg-surface sticky top-0 z-50 h-16 border-b px-4">
         <Row className="h-full" wrap={false} align="middle">
           {isMobile ? (
             <>

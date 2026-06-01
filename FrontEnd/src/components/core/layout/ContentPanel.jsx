@@ -1,9 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import { Button, Skeleton, Row, Col, Spin, theme, Typography } from 'antd';
+import { Button, Skeleton, Row, Col, Spin, Typography } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 
-const { useToken } = theme;
 const { Title } = Typography;
 
 const ContentPanel = ({
@@ -15,8 +13,6 @@ const ContentPanel = ({
   withTabs = false,
   loading = false
 }) => {
-  const { token } = useToken();
-
   const titleContainer =
     title || subtitle || titleAction ? (
       <div className="flex w-full items-center">
@@ -35,13 +31,9 @@ const ContentPanel = ({
     );
 
   const titleBox = (
-    <div
-      id="title-box"
-      className="sticky top-16 z-10 flex flex-row gap-2.5 px-5 py-3"
-      style={{ backgroundColor: token.colorBgBase, borderBottom: '1px solid ' + token.colorBorder }}
-    >
+    <div id="title-box" className="border-edge bg-surface sticky top-0 z-10 flex flex-row gap-2.5 border-b px-5 py-3">
       {back && (
-        <div className="title-back" style={{ borderRight: '1px solid ' + token.colorBorder }}>
+        <div className="title-back border-edge border-r">
           <Button onClick={back} type="link">
             <FontAwesomeIcon icon={faAngleLeft} />
           </Button>
@@ -66,17 +58,11 @@ const ContentPanel = ({
 export default ContentPanel;
 
 export const renderTabBar = (props, DefaultTabBar) => {
-  const { token } = useToken();
-
   let top = 2;
   if (document.querySelector('#title-box')) top += document.querySelector('#title-box').clientHeight;
-  if (document.querySelector('#topbar')) top += document.querySelector('#topbar').clientHeight;
 
   return (
-    <div
-      className="sticky z-10 mb-5"
-      style={{ top: top + 'px', backgroundColor: token.colorBgBase, borderBottom: '1px solid ' + token.colorBorder }}
-    >
+    <div className="border-edge bg-surface sticky z-10 mb-5 border-b" style={{ top: top + 'px' }}>
       <DefaultTabBar {...props} className="mx-5 mb-0" />
     </div>
   );

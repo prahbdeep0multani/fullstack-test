@@ -92,7 +92,7 @@ const EntryForm = ({ open, entry, onSave, onCancel, categories = [] }) => {
           label={t('entries.amount')}
           rules={[{ required: true, message: t('validation.required') }]}
         >
-          <CostInput style={{ width: '100%' }} />
+          <CostInput className="w-full" />
         </Form.Item>
 
         <Form.Item name="description" label={t('common.description')}>
@@ -110,7 +110,7 @@ const EntryForm = ({ open, entry, onSave, onCancel, categories = [] }) => {
         </Form.Item>
 
         <Form.Item name="date" label={t('entries.date')}>
-          <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+          <DatePicker className="w-full" format="DD/MM/YYYY" />
         </Form.Item>
       </Form>
     </Modal>

@@ -35,7 +35,7 @@
     "export": "Esporta",
     "user": "Utente",
     "files": "Files",
-    "darkMode": "Dark Mode",
+    "appTheme": "Tema app",
     "language": "Lingua",
     "categories": "Categorie",
     "category": "Categoria",
@@ -44,7 +44,26 @@
     "filter": "Filtra",
     "home": "Home",
     "new": "Nuovo",
-    "ok": "Ok"
+    "ok": "Ok",
+    "loading": "Caricamento",
+    "clearFilters": "Azzera filtri",
+    "workInProgress": "In sviluppo",
+    "workInProgressSub": "Questa pagina sarà disponibile a breve!",
+    "unauthorized": "Non autorizzato",
+    "unauthorizedSub": "Non sei autorizzato ad accedere a questa pagina.",
+    "dark": "Scuro",
+    "light": "Chiaro"
+  },
+  "langs": {
+    "IT": "Italiano",
+    "EN": "English"
+  },
+  "home": {
+    "greeting": "Ciao{{name}}!",
+    "catchphrase1": "Tieni traccia di ogni euro.",
+    "catchphrase2": "Il controllo inizia da qui.",
+    "catchphrase3": "Bilancio chiaro, mente libera.",
+    "recentEntries": "Ultime voci"
   },
   "login": {
     "btn": "Accedi",
@@ -89,6 +108,21 @@
     "lastYear": "Ultimo anno",
     "allTime": "Tutto",
     "chartTitle": "Entrate vs Spese"
+  },
+  "collaborators": {
+    "title": "Team",
+    "invite": "Invita",
+    "inviteTitle": "Invita un collaboratore",
+    "sendInvite": "Invia invito",
+    "email": "Indirizzo email",
+    "invalidEmail": "Inserisci un indirizzo email valido",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "role": "Ruolo",
+    "status": "Stato",
+    "active": "Attivo",
+    "pending": "In attesa",
+    "remove": "Rimuovi dal team"
   },
   "validation": {
     "required": "Campo obbligatorio"

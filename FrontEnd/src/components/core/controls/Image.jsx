@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { useEffect, useState } from 'react';
 import { Image as AntImage, Typography } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

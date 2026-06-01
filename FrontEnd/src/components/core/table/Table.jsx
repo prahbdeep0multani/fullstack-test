@@ -1,7 +1,5 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable react/jsx-props-no-spreading */
 import { useContext, useEffect, useState } from 'react';
-import { Table as AntTable, Popconfirm, Button, Input, Form, theme, Tooltip, Modal, Spin, Typography } from 'antd';
+import { Table as AntTable, Popconfirm, Button, Input, Form, Tooltip, Modal, Spin, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit, faSearch, faAdd, faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +12,6 @@ import MessageContext from '../../../helpers/core/MessageContext';
 
 import '../../../styles/core/components/Table.css';
 
-const { useToken } = theme;
 const { Text } = Typography;
 
 const Table = ({
@@ -52,17 +49,15 @@ const Table = ({
   const { loadingMsg, savedMsg, errorMsg, destroyMsg } = useContext(MessageContext);
   const [columns, setColumns] = useState(initColumns);
   const [formDisabled, setFormDisabled] = useState(false);
-  const { token } = useToken();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [searchTimer, setSearchTimer] = useState(null);
   const [topGap, setTopGap] = useState(0);
 
   const handleResize = () => {
-    const topBar = document.getElementById('topbar');
     const titleBox = document.querySelector('.content-panel #title-box');
     const tabNav = document.querySelector('.content-panel .ant-tabs > .sticky > .ant-tabs-nav');
-    setTopGap((topBar?.offsetHeight || 0) + (titleBox?.offsetHeight || 0) + (tabNav?.offsetHeight || 0));
+    setTopGap((titleBox?.offsetHeight || 0) + (tabNav?.offsetHeight || 0));
   };
 
   useOnResize(handleResize);
@@ -124,8 +119,7 @@ const Table = ({
     }
 
     const newTimer = setTimeout(() => {
-      data.target.value = encodeURIComponent(data.target.value);
-      onChangeSearchBar(data);
+      onChangeSearchBar({ ...data, target: { ...data.target, value: encodeURIComponent(data.target.value) } });
     }, searchDelay);
 
     setSearchTimer(newTimer);
@@ -219,21 +213,24 @@ const Table = ({
       ].concat(newColumns);
     }
 
-    newColumns.forEach(col => {
-      if (sortableKeys.includes(col.key)) {
-        col.sorter = col.sorter || true;
-        col.sortDirections = col.sortDirections || ['ascend', 'descend', 'ascend'];
-      }
-
+    const processedColumns = newColumns.map(col => {
       const tmpRender = col.render || null;
-      col.render = (value, record, idx) => (
-        <div className="responsive-table-cell" data-title={col.title}>
-          <Tooltip {...col?.tooltip}>{(tmpRender && tmpRender(value, record, idx)) || value || ''}</Tooltip>
-        </div>
-      );
+      const isSortable = sortableKeys.includes(col.key);
+      return {
+        ...col,
+        ...(isSortable && {
+          sorter: col.sorter || true,
+          sortDirections: col.sortDirections || ['ascend', 'descend', 'ascend']
+        }),
+        render: (value, record, idx) => (
+          <div className="responsive-table-cell" data-title={col.title}>
+            <Tooltip {...col?.tooltip}>{(tmpRender && tmpRender(value, record, idx)) || value || ''}</Tooltip>
+          </div>
+        )
+      };
     });
 
-    return setColumns([...newColumns]);
+    return setColumns(processedColumns);
   }, [initColumns]);
 
   useEffect(() => {
@@ -248,8 +245,8 @@ const Table = ({
 
   const header = (
     <div
-      className={stickyHeader ? 'sticky z-[1000] -mt-5 w-full py-5' : ''}
-      style={{ top: `${topGap}px`, backgroundColor: token.colorBgLayout }}
+      className={stickyHeader ? 'bg-surface-2 sticky z-[1000] -mt-5 w-full py-5' : ''}
+      style={{ top: `${topGap}px` }}
     >
       <div className="-mx-2">
         <div className={`${headerMargin} flex w-full flex-wrap`}>
@@ -309,7 +306,7 @@ const Table = ({
     <InfiniteScroll
       dataLength={dataSource.length}
       {...infinite}
-      style={{ backgroundColor: token.colorBgContainer }}
+      className="bg-surface"
       loader={
         <div className="m-10 flex justify-center">
           <Spin />

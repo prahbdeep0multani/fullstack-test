@@ -22,6 +22,11 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage'],
+      lookupLocalStorage: 'lang'
+    },
     fallbackLng: defaultLanguage,
     debug: import.meta.env.VITE_ENV === 'dev',
     supportedLngs: allowedLanguages,

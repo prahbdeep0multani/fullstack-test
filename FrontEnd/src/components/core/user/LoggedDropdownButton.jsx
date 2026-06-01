@@ -1,5 +1,4 @@
-/* eslint-disable no-nested-ternary */
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Switch, Dropdown, Space } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,22 +16,33 @@ import AuthContext from '../../../helpers/core/AuthContext';
 const UserDropdownButton = props => {
   const { t, i18n } = useTranslation();
   const { logged, signOut } = useContext(AuthContext);
-  const { darkMode, setDarkMode } = useContext(AppContext);
+  const { appTheme, setAppTheme } = useContext(AppContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const lastClickedKey = useRef(null);
 
-  // eslint-disable-next-line consistent-return
+  const stayOpenKeys = ['it', 'en', 'darkmode'];
+
   const onClick = ({ key }) => {
-    // eslint-disable-next-line default-case
+    lastClickedKey.current = key;
     switch (key) {
       case 'it':
       case 'en':
         return i18n.changeLanguage(key);
-      case 'darkmode':
-        return setOpen(true);
       case 'logout':
         return signOut(() => navigate('/', { intended: '/' }));
+      default:
+        return null;
     }
+  };
+
+  const handleOpenChange = flag => {
+    if (!flag && stayOpenKeys.includes(lastClickedKey.current)) {
+      lastClickedKey.current = null;
+      return;
+    }
+    lastClickedKey.current = null;
+    setOpen(flag);
   };
 
   const items = [
@@ -40,12 +50,12 @@ const UserDropdownButton = props => {
       icon: <FontAwesomeIcon icon={faCircle} />,
       label: (
         <Space>
-          {t('common.darkMode')}
+          {t('common.appTheme')}
           <Switch
-            checked={darkMode}
-            onChange={checked => setDarkMode(checked)}
-            checkedChildren="dark"
-            unCheckedChildren="light"
+            checked={appTheme}
+            onChange={checked => setAppTheme(checked)}
+            checkedChildren={t('common.dark')}
+            unCheckedChildren={t('common.light')}
             className="ml-8"
           />
         </Space>
@@ -62,7 +72,7 @@ const UserDropdownButton = props => {
           label: (
             <Space>
               <FlagIcon code="IT" size={14} className="w-5" />
-              Italiano
+              {t('langs.IT')}
             </Space>
           )
         },
@@ -71,7 +81,7 @@ const UserDropdownButton = props => {
           label: (
             <Space>
               <FlagIcon code="GB" size={14} className="w-5" />
-              English
+              {t('langs.EN')}
             </Space>
           )
         }
@@ -93,7 +103,7 @@ const UserDropdownButton = props => {
       menu={{ items, onClick }}
       type="text"
       className="logged-dropdown-button"
-      onOpenChange={flag => setOpen(flag)}
+      onOpenChange={handleOpenChange}
       open={open}
       onClick={() => setOpen(true)}
       icon={<FontAwesomeIcon icon={faAngleDown} />}

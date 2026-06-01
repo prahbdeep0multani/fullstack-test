@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { useEffect, useState, useContext, memo } from 'react';
 import { Avatar, Skeleton, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';

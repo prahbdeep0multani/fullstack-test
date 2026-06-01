@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { memo, useState, useEffect, useRef } from 'react';
 import { Modal, Progress, Upload } from 'antd';
 import axios from 'axios';

@@ -44,8 +44,7 @@ const HorizontalDatePicker = ({ onChange, value, only = false, limit = 0, invert
 
   useEffect(() => {
     const y = [];
-    // eslint-disable-next-line no-plusplus
-    for (let i = dayjs().year() - limit; i > 1900; i--) {
+    for (let i = dayjs().year() - limit; i > 1900; i -= 1) {
       y.push({ label: i, value: i });
     }
 

@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { useEffect, useState, useContext, memo } from 'react';
-import { Avatar, Skeleton, Tooltip, theme } from 'antd';
+import { Avatar, Skeleton, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -8,13 +7,10 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import AuthContext from '../../../helpers/core/AuthContext';
 import Api from '../../../helpers/core/Api';
 
-const { useToken } = theme;
-
 const UserPic = props => {
   const { user, size, link, loadPic, ...spreadProps } = props;
   const { logged } = useContext(AuthContext);
   const [info, setInfo] = useState(null);
-  const { token } = useToken();
 
   useEffect(() => {
     if (user) {
@@ -39,7 +35,7 @@ const UserPic = props => {
       <Avatar
         {...spreadProps}
         size={size}
-        style={{ backgroundColor: token.colorPrimary }}
+        className="!bg-primary"
         icon={<FontAwesomeIcon icon={faUser} fontSize={typeof size === 'number' ? size / 2 : 14} />}
         src={info.picUrl}
         alt={info.fullname}

@@ -1,15 +1,12 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Form, Input, Button, Divider, Checkbox, Card, Col, Row, Modal, Alert, Typography } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import { Form, Input, Button, Checkbox, Modal, Alert } from 'antd';
+import { AccountBookOutlined } from '@ant-design/icons';
 
 import Api from '../../../helpers/core/Api';
-import logo from '../../../img/logo.svg';
 import AuthContext, { AuthStatus } from '../../../helpers/core/AuthContext';
-
-const { Title } = Typography;
+import { EYEBROW, EYEBROW_SM, PAGE_TITLE } from '../../../helpers/editorial';
 
 const LoginRegister = ({ afterSignIn = () => {} }) => {
   const { t, i18n } = useTranslation();
@@ -133,11 +130,40 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
     );
   };
 
-  return navigator.cookieEnabled ? (
-    <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
-      <img src={logo} alt="Graniti Vicentia Logo" className="mb-5 h-[60px]" />
-      <Title className="mb-6 flex items-center text-2xl">{t('login.title')}</Title>
-      <Card className="w-full sm:max-w-md md:mt-0 xl:p-0">
+  if (!navigator.cookieEnabled) {
+    return Modal.error({ title: t('cookie.title'), content: t('cookie.message') });
+  }
+
+  const sublabel = {
+    [MODE.INIT]: 'Enter your email to continue',
+    [MODE.LOGIN]: 'Welcome back',
+    [MODE.REGISTER]: 'Create your account',
+    [MODE.FORGOT_PWD]: t('login.forgotPasswordTitle')
+  };
+
+  const inputClass = '!border-none !bg-fill';
+  const fieldLabel = label => <span className={EYEBROW_SM}>{label}</span>;
+
+  return (
+    <div className="bg-surface-2 flex min-h-screen items-center justify-center px-5 py-10 font-sans">
+      <div className="w-full max-w-[380px]">
+        {/* Brand mark */}
+        <div className="mb-8 flex items-center gap-2.5">
+          <AccountBookOutlined className="text-primary text-[22px]" />
+          <span className="text-ink text-[13px] font-medium uppercase tracking-[0.08em]">
+            {import.meta.env.VITE_NAME || 'ContiChiari'}
+          </span>
+        </div>
+
+        {/* Title */}
+        <div className={`${EYEBROW} mb-2.5`}>{sublabel[loginMode]}</div>
+        <div className={`${PAGE_TITLE} mb-8`}>
+          {loginMode === MODE.INIT && t('login.welcome')}
+          {loginMode === MODE.LOGIN && t('login.login')}
+          {loginMode === MODE.REGISTER && t('login.register')}
+          {loginMode === MODE.FORGOT_PWD && t('login.forgotPasswordTitle')}
+        </div>
+
         <Form
           id="loginForm"
           form={form}
@@ -145,82 +171,69 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
           requiredMark={false}
           validateMessages={validateMessages}
           onFinish={handleSubmit}
+          className="font-sans"
         >
-          {forgotPwdOk && <Alert message={t('login.changePasswordEmailSent')} type="success" className="mb-6" />}
+          {forgotPwdOk && (
+            <Alert message={t('login.changePasswordEmailSent')} type="success" showIcon className="!mb-4 !rounded-lg" />
+          )}
+
           <Form.Item
             name="email"
+            label={fieldLabel('Email')}
             validateTrigger="onSubmit"
             validateStatus={emailError ? 'error' : undefined}
             help={emailError || undefined}
             onChange={() => setEmailError(false)}
-            rules={[
-              {
-                required: true
-              },
-              {
-                type: 'email',
-                message: t('core:errors.210')
-              }
-            ]}
+            rules={[{ required: true }, { type: 'email', message: t('core:errors.210') }]}
           >
             <Input
               autoFocus
-              addonBefore={<FontAwesomeIcon icon={faUser} />}
+              size="large"
               readOnly={loginMode === MODE.REGISTER}
-              placeholder={t('core:fields.email')}
+              placeholder="name@company.com"
               value={emailValue}
               onChange={value => setEmailValue(value)}
               disabled={forgotPwdOk}
+              className={inputClass}
             />
           </Form.Item>
+
           {(loginMode === MODE.LOGIN || loginMode === MODE.REGISTER) && (
             <Form.Item
               name="password"
+              label={fieldLabel(t('core:fields.password'))}
               validateTrigger="onSubmit"
               validateStatus={pwdError ? 'error' : undefined}
               help={pwdError || undefined}
               onChange={() => setPwdError(false)}
-              rules={[
-                {
-                  required: true
-                }
-              ]}
+              rules={[{ required: true }]}
             >
-              <Input.Password
-                ref={passwordRef}
-                addonBefore={<FontAwesomeIcon icon={faLock} />}
-                placeholder={t('core:fields.password')}
-              />
+              <Input.Password ref={passwordRef} size="large" placeholder="••••••••" className={inputClass} />
             </Form.Item>
           )}
 
           {loginMode === MODE.REGISTER && (
             <>
-              <Divider />
-              <Form.Item
-                validateTrigger="onSubmit"
-                name="name"
-                rules={[
-                  {
-                    required: true
-                  }
-                ]}
-              >
-                <Input placeholder={t('common.name')} maxLength="128" />
-              </Form.Item>
+              <div className="grid grid-cols-2 gap-3">
+                <Form.Item
+                  validateTrigger="onSubmit"
+                  name="name"
+                  label={fieldLabel(t('common.name'))}
+                  rules={[{ required: true }]}
+                >
+                  <Input size="large" placeholder={t('common.name')} maxLength="128" className={inputClass} />
+                </Form.Item>
 
-              <Form.Item
-                name="lastname"
-                validateTrigger="onSubmit"
-                rules={[
-                  {
-                    required: true
-                  }
-                ]}
-              >
-                <Input placeholder={t('login.lastname')} maxLength="128" />
-              </Form.Item>
-              <Divider />
+                <Form.Item
+                  name="lastname"
+                  validateTrigger="onSubmit"
+                  label={fieldLabel(t('login.lastname'))}
+                  rules={[{ required: true }]}
+                >
+                  <Input size="large" placeholder={t('login.lastname')} maxLength="128" className={inputClass} />
+                </Form.Item>
+              </div>
+
               <Form.Item
                 name="privacy"
                 valuePropName="checked"
@@ -228,48 +241,55 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
                 validateTrigger="onSubmit"
                 help={privacyError || undefined}
                 onChange={() => setPrivacyError(false)}
-                rules={[
-                  {
-                    required: true
-                  }
-                ]}
+                rules={[{ required: true }]}
+                className="!mt-3"
               >
-                <Checkbox>{privacyLink()}</Checkbox>
+                <Checkbox>
+                  <span className="text-ink-2 text-xs">{privacyLink()}</span>
+                </Checkbox>
               </Form.Item>
             </>
           )}
 
           {loginMode === MODE.LOGIN && (
-            <Form.Item className="text-center">
-              <Button type="link" onClick={() => setLoginMode(MODE.FORGOT_PWD)}>
+            <div className="-mt-2 mb-4 text-right">
+              <button
+                type="button"
+                onClick={() => setLoginMode(MODE.FORGOT_PWD)}
+                className="text-ink-2 cursor-pointer border-none bg-transparent p-0 text-[11px] uppercase tracking-[0.05em]"
+              >
                 {t('login.forgotPassword')}
-              </Button>
-            </Form.Item>
+              </button>
+            </div>
           )}
-          <Row wrap={false}>
-            {loginMode !== MODE.INIT ? (
-              <Col flex="none">
-                <Button disabled={loading} onClick={() => handleBack()}>
-                  {t('common.back')}
-                </Button>
-              </Col>
-            ) : (
-              ''
-            )}
-            <Col flex="auto" className="text-right">
-              <Button form="loginForm" type="primary" htmlType="submit" loading={loading} disabled={loading}>
-                {loginMode}
+
+          <div className="mt-6 flex gap-2.5">
+            {loginMode !== MODE.INIT && (
+              <Button size="large" disabled={loading} onClick={() => handleBack()} className="!text-[13px]">
+                {t('common.back')}
               </Button>
-            </Col>
-          </Row>
+            )}
+            <Button
+              form="loginForm"
+              type="primary"
+              size="large"
+              htmlType="submit"
+              loading={loading}
+              disabled={loading}
+              block={loginMode === MODE.INIT}
+              className={`!text-[13px] !font-medium !tracking-[0.04em] ${loginMode !== MODE.INIT ? '!flex-1' : ''}`}
+            >
+              {loginMode}
+            </Button>
+          </div>
         </Form>
-      </Card>
+
+        {/* Footer mark */}
+        <div className="text-ink-3 mt-10 text-center font-serif text-[10px] uppercase italic tracking-[0.12em]">
+          {t('home.catchphrase1')}
+        </div>
+      </div>
     </div>
-  ) : (
-    Modal.error({
-      title: t('cookie.title'),
-      content: t('cookie.message')
-    })
   );
 };
 

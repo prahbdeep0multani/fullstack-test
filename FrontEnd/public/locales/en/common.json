@@ -35,7 +35,7 @@
     "export": "Export",
     "user": "User",
     "files": "Files",
-    "darkMode": "Dark Mode",
+    "appTheme": "App Theme",
     "language": "language",
     "categories": "Categories",
     "category": "Category",
@@ -43,8 +43,27 @@
     "count": "Results: {{count}}",
     "filter": "Filter",
     "home": "Home",
-    "new": "Nuovo",
-    "ok": "Ok"
+    "new": "New",
+    "ok": "Ok",
+    "loading": "Loading",
+    "clearFilters": "Clear filters",
+    "workInProgress": "Work In Progress",
+    "workInProgressSub": "This page will be available soon!",
+    "unauthorized": "Unauthorized",
+    "unauthorizedSub": "Sorry, you are not authorized to access this page.",
+    "dark": "dark",
+    "light": "light"
+  },
+  "langs": {
+    "IT": "Italiano",
+    "EN": "English"
+  },
+  "home": {
+    "greeting": "Hello{{name}}!",
+    "catchphrase1": "Track every euro.",
+    "catchphrase2": "Control starts here.",
+    "catchphrase3": "Clear balance, free mind.",
+    "recentEntries": "Recent entries"
   },
   "login": {
     "btn": "Sign In",
@@ -89,6 +108,21 @@
     "lastYear": "Last year",
     "allTime": "All time",
     "chartTitle": "Income vs Expenses"
+  },
+  "collaborators": {
+    "title": "Team",
+    "invite": "Invite",
+    "inviteTitle": "Invite a collaborator",
+    "sendInvite": "Send invite",
+    "email": "Email address",
+    "invalidEmail": "Enter a valid email address",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "role": "Role",
+    "status": "Status",
+    "active": "Active",
+    "pending": "Pending",
+    "remove": "Remove from team"
   },
   "validation": {
     "required": "Required field"

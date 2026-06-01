@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable react/jsx-props-no-spreading */
 import { useCallback, useEffect, useState } from 'react';
 import { InputNumber } from 'antd';
 import config from '../../../config';
@@ -25,16 +23,17 @@ const CostInput = ({
 
   const parser = useCallback(
     input => {
-      if (input.includes(',') && input.includes('.')) {
-        const lastCommaIndex = input.lastIndexOf(',');
-        const lastDotIndex = input.lastIndexOf('.');
+      let normalized = input;
+      if (normalized.includes(',') && normalized.includes('.')) {
+        const lastCommaIndex = normalized.lastIndexOf(',');
+        const lastDotIndex = normalized.lastIndexOf('.');
         if (lastCommaIndex > lastDotIndex) {
-          input = input.replace(/\./g, '');
+          normalized = normalized.replace(/\./g, '');
         } else {
-          input = input.replace(/,/g, '');
+          normalized = normalized.replace(/,/g, '');
         }
       }
-      const sanitizedValue = input.toString().replace(',', '.');
+      const sanitizedValue = normalized.toString().replace(',', '.');
       const numericalValue = parseFloat(sanitizedValue);
       return centsBased ? Math.round(numericalValue * 100) : numericalValue;
     },

@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { Modal } from 'antd';
@@ -40,9 +39,9 @@ export const ApiInterceptor = ({ children }) => {
   };
 
   const resErrInterceptor = error => {
-    error.globalHandler = errorComposer(error);
-
-    return Promise.reject(error);
+    const enrichedError = Object.assign(Object.create(Object.getPrototypeOf(error)), error);
+    enrichedError.globalHandler = errorComposer(error);
+    return Promise.reject(enrichedError);
   };
 
   const interceptor = useMemo(() => Api.interceptors.response.use(e => e, resErrInterceptor), []);

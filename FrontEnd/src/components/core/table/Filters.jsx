@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { Button, Drawer, Tooltip, theme } from 'antd';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';

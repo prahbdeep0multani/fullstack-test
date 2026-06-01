@@ -2,7 +2,7 @@ import { useState, createContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faBook } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faBook, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 import useLocalStorage from '../hooks/core/useLocalStorage';
 
@@ -20,7 +20,7 @@ export const AppProvider = props => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
-  const [darkMode, setDarkMode] = useLocalStorage('darkMode', false);
+  const [appTheme, setAppTheme] = useLocalStorage('theme', false);
 
   const [defaultCurrency] = useState(config.defaultCurrency);
   const [itemXpage] = useState(config.itemXpage);
@@ -34,13 +34,19 @@ export const AppProvider = props => {
         label: <Link to="/">{t('common.home')}</Link>,
         key: 'home',
         icon: <FontAwesomeIcon icon={faHome} />,
-        authorizedRoles: ['admin', 'designer', 'manufacturer', 'owner']
+        authorizedRoles: ['superuser', 'user']
       },
       {
         label: <Link to="/entries">{t('entries.title')}</Link>,
         key: 'entries',
         icon: <FontAwesomeIcon icon={faBook} />,
-        authorizedRoles: ['admin', 'user']
+        authorizedRoles: ['superuser', 'user']
+      },
+      {
+        label: <Link to="/collaborators">{t('collaborators.title')}</Link>,
+        key: 'collaborators',
+        icon: <FontAwesomeIcon icon={faUsers} />,
+        authorizedRoles: ['superuser']
       }
     ]
   };
@@ -51,8 +57,8 @@ export const AppProvider = props => {
   const exportedValue = useMemo(
     () => ({
       isMobile,
-      darkMode,
-      setDarkMode,
+      appTheme,
+      setAppTheme,
       defaultCurrency,
       itemXpage,
       menuItems,
@@ -62,7 +68,7 @@ export const AppProvider = props => {
       macroMenuSelection,
       setMacroMenuSelection
     }),
-    [isMobile, darkMode, defaultCurrency, itemXpage, menuItems, MacroMenu, selectedMenuItem, macroMenuSelection]
+    [isMobile, appTheme, defaultCurrency, itemXpage, menuItems, MacroMenu, selectedMenuItem, macroMenuSelection]
   );
 
   return <AppContext.Provider value={exportedValue}>{props.children}</AppContext.Provider>;

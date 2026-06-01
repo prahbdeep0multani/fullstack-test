@@ -1,9 +1,7 @@
-/* eslint-disable prefer-arrow-callback */
-/* eslint-disable react/jsx-props-no-spreading */
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Button } from 'antd';
 
-const SubmitButton = forwardRef(function SubmitButton({ children, ...props }, ref) {
+const SubmitButton = forwardRef(({ children, ...props }, ref) => {
   const [loading, setLoading] = useState(false);
   const btnRef = useRef(null);
 
@@ -23,5 +21,7 @@ const SubmitButton = forwardRef(function SubmitButton({ children, ...props }, re
     </Button>
   );
 });
+
+SubmitButton.displayName = 'SubmitButton';
 
 export default SubmitButton;

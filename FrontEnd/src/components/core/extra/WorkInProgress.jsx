@@ -9,8 +9,8 @@ const WorkInProgress = ({ noBack = false }) => {
 
   return (
     <Result
-      title="Work In Progress"
-      subTitle="This page will be available soon!"
+      title={t('common.workInProgress')}
+      subTitle={t('common.workInProgressSub')}
       extra={
         !noBack && (
           <Button type="primary" onClick={() => navigate(-1)}>

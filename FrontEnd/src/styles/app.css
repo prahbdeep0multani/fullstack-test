@@ -1,1 +1,46 @@
-/* SILENCE IS GOLD */
+/* ── DESIGN TOKENS ──────────────────────────────────────────────────────────
+   Mirror AntD's runtime tokens so we can drive everything from Tailwind classes
+   instead of inline style. .dark is toggled on <body> by ThemeProvider. */
+
+:root {
+  --c-text: rgba(0, 0, 0, 0.88);
+  --c-text-2: rgba(0, 0, 0, 0.65);
+  --c-text-3: rgba(0, 0, 0, 0.45);
+  --c-border: #d9d9d9;
+  --c-border-2: #f0f0f0;
+  --c-bg: #ffffff;
+  --c-bg-layout: #f5f5f5;
+  --c-fill: rgba(0, 0, 0, 0.04);
+  --c-fill-2: rgba(0, 0, 0, 0.06);
+  --c-primary: #1677ff;
+  --c-primary-bg: #e6f4ff;
+}
+
+.dark {
+  --c-text: rgba(255, 255, 255, 0.88);
+  --c-text-2: rgba(255, 255, 255, 0.65);
+  --c-text-3: rgba(255, 255, 255, 0.45);
+  --c-border: #1e1e1e;
+  --c-border-2: #1e1e1e;
+  --c-bg: #121212;
+  --c-bg-layout: #181818;
+  --c-fill: rgba(255, 255, 255, 0.04);
+  --c-fill-2: rgba(255, 255, 255, 0.08);
+  --c-primary: #1677ff;
+  --c-primary-bg: rgba(22, 119, 255, 0.18);
+}
+
+/* ── AUTOFILL DARK MODE ───────────────────────────────────────────────────── */
+/* Chrome/Safari force a white/yellow background on autofilled inputs.
+   box-shadow inset is the only reliable override. */
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 9999px #121212 inset !important;
+  box-shadow: 0 0 0 9999px #121212 inset !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+  caret-color: rgba(255, 255, 255, 0.85);
+  transition: background-color 5000s ease-in-out 0s;
+}

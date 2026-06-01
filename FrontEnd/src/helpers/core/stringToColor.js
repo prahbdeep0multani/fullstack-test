@@ -57,11 +57,7 @@ export default str => {
   const hash = str
     .toUpperCase()
     .split(' ')
-    .reduce((acc, char) => {
-      // eslint-disable-next-line no-param-reassign
-      acc += char.charCodeAt();
-      return acc;
-    }, 0);
+    .reduce((acc, char) => acc + char.charCodeAt(), 0);
 
   return colours[hash % colours.length];
 };

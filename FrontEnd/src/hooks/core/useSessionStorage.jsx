@@ -15,9 +15,8 @@ const useSessionStorage = (key, initValue) => {
       const valueToStore = newValue instanceof Function ? newValue(value) : newValue;
       setValue(valueToStore);
       window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('useSessionStorage error: ', error);
+    } catch {
+      // silently ignore storage write errors
     }
   };
 
