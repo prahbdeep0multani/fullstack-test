@@ -69,7 +69,8 @@ const Collaborators = () => {
     form.validateFields().then(values => {
       setInviteLoading(true);
       const msg = loadingMsg();
-      inviteCollaborator({ ...values, roles: [values.role] })
+      const { role, ...rest } = values;
+      inviteCollaborator({ ...rest, roles: [role] })
         .then(() => {
           savedMsg(msg);
           setModalOpen(false);
