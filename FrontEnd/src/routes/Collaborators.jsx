@@ -102,13 +102,7 @@ const Collaborators = () => {
           <div className={`${EYEBROW} mb-1.5`}>{t('collaborators.title')}</div>
           <div className={PAGE_TITLE}>{t('collaborators.title')}</div>
         </div>
-        <Button
-          type="primary"
-          size="large"
-          icon={<PlusOutlined />}
-          onClick={() => setModalOpen(true)}
-          className="!h-10 !font-sans !text-[13px] !tracking-[0.04em]"
-        >
+        <Button type="primary" size="large" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
           {t('collaborators.invite')}
         </Button>
       </div>
@@ -138,7 +132,7 @@ const Collaborators = () => {
         placeholder={t('common.filter')}
         value={search}
         onChange={e => setSearch(e.target.value)}
-        className="!bg-fill !mb-6 !max-w-[360px] !rounded-lg !border-none !font-sans"
+        className="mb-6 max-w-[360px]"
       />
 
       {/* ── Roster list ── */}

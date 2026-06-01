@@ -168,13 +168,7 @@ const Home = () => {
       <div>
         <div className="mb-3.5 flex items-center justify-between">
           <div className={EYEBROW_SM}>{t('home.recentEntries')}</div>
-          <Button
-            type="link"
-            size="small"
-            icon={<ArrowRightOutlined />}
-            onClick={() => navigate('/entries')}
-            className="!h-auto !p-0 !font-sans !text-[11px]"
-          >
+          <Button type="link" size="small" icon={<ArrowRightOutlined />} onClick={() => navigate('/entries')}>
             {t('common.details')}
           </Button>
         </div>

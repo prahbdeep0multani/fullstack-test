@@ -35,7 +35,7 @@ const UserPic = props => {
       <Avatar
         {...spreadProps}
         size={size}
-        className="!bg-primary"
+        style={{ backgroundColor: 'var(--c-primary)' }}
         icon={<FontAwesomeIcon icon={faUser} fontSize={typeof size === 'number' ? size / 2 : 14} />}
         src={info.picUrl}
         alt={info.fullname}

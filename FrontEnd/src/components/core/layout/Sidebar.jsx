@@ -72,7 +72,7 @@ const SidebarContent = ({ collapsed = false, setCollapsed, showCollapseBtn = tru
             size="small"
             icon={<MenuFoldOutlined />}
             onClick={() => setCollapsed(c => !c)}
-            className="!text-ink-3 shrink-0"
+            className="text-ink-3 shrink-0"
           />
         )}
       </div>
@@ -84,7 +84,7 @@ const SidebarContent = ({ collapsed = false, setCollapsed, showCollapseBtn = tru
             size="small"
             icon={<MenuUnfoldOutlined />}
             onClick={() => setCollapsed(c => !c)}
-            className="!text-ink-3"
+            className="text-ink-3"
           />
         </div>
       )}
@@ -195,7 +195,7 @@ const Sidebar = () => {
           icon={<MenuOutlined />}
           size="small"
           onClick={() => setDrawerOpen(true)}
-          className="!fixed !left-3.5 !top-3.5 !z-[1001] !rounded-lg shadow-md"
+          className="fixed left-3.5 top-3.5 z-[1001] rounded-lg shadow-md"
         />
         <Drawer
           placement="left"

@@ -141,7 +141,6 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
     [MODE.FORGOT_PWD]: t('login.forgotPasswordTitle')
   };
 
-  const inputClass = '!border-none !bg-fill';
   const fieldLabel = label => <span className={EYEBROW_SM}>{label}</span>;
 
   return (
@@ -174,7 +173,7 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
           className="font-sans"
         >
           {forgotPwdOk && (
-            <Alert message={t('login.changePasswordEmailSent')} type="success" showIcon className="!mb-4 !rounded-lg" />
+            <Alert message={t('login.changePasswordEmailSent')} type="success" showIcon className="mb-4" />
           )}
 
           <Form.Item
@@ -194,7 +193,6 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
               value={emailValue}
               onChange={value => setEmailValue(value)}
               disabled={forgotPwdOk}
-              className={inputClass}
             />
           </Form.Item>
 
@@ -208,7 +206,7 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
               onChange={() => setPwdError(false)}
               rules={[{ required: true }]}
             >
-              <Input.Password ref={passwordRef} size="large" placeholder="••••••••" className={inputClass} />
+              <Input.Password ref={passwordRef} size="large" placeholder="••••••••" />
             </Form.Item>
           )}
 
@@ -221,7 +219,7 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
                   label={fieldLabel(t('common.name'))}
                   rules={[{ required: true }]}
                 >
-                  <Input size="large" placeholder={t('common.name')} maxLength="128" className={inputClass} />
+                  <Input size="large" placeholder={t('common.name')} maxLength="128" />
                 </Form.Item>
 
                 <Form.Item
@@ -230,7 +228,7 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
                   label={fieldLabel(t('login.lastname'))}
                   rules={[{ required: true }]}
                 >
-                  <Input size="large" placeholder={t('login.lastname')} maxLength="128" className={inputClass} />
+                  <Input size="large" placeholder={t('login.lastname')} maxLength="128" />
                 </Form.Item>
               </div>
 
@@ -242,7 +240,7 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
                 help={privacyError || undefined}
                 onChange={() => setPrivacyError(false)}
                 rules={[{ required: true }]}
-                className="!mt-3"
+                className="mt-3"
               >
                 <Checkbox>
                   <span className="text-ink-2 text-xs">{privacyLink()}</span>
@@ -265,7 +263,7 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
 
           <div className="mt-6 flex gap-2.5">
             {loginMode !== MODE.INIT && (
-              <Button size="large" disabled={loading} onClick={() => handleBack()} className="!text-[13px]">
+              <Button size="large" disabled={loading} onClick={() => handleBack()}>
                 {t('common.back')}
               </Button>
             )}
@@ -277,7 +275,7 @@ const LoginRegister = ({ afterSignIn = () => {} }) => {
               loading={loading}
               disabled={loading}
               block={loginMode === MODE.INIT}
-              className={`!text-[13px] !font-medium !tracking-[0.04em] ${loginMode !== MODE.INIT ? '!flex-1' : ''}`}
+              className={loginMode !== MODE.INIT ? 'flex-1' : ''}
             >
               {loginMode}
             </Button>

@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Empty, Input, Popconfirm, Table, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -198,14 +198,13 @@ const Entries = () => {
     {
       title: '',
       key: 'actions',
-      width: 80,
+      width: 76,
+      fixed: 'right',
       align: 'right',
       render: (_, record) => (
-        <span className="inline-flex gap-1">
+        <span className="inline-flex gap-0.5">
           <Tooltip title={t('common.edit')}>
-            <Button type="text" size="small" onClick={() => handleEdit(record)}>
-              <span className="text-ink-3 text-[10px] tracking-[0.08em]">EDIT</span>
-            </Button>
+            <Button type="text" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
           </Tooltip>
           <Popconfirm
             title={t('common.sureToDelete')}
@@ -215,9 +214,7 @@ const Entries = () => {
             onConfirm={() => handleDelete(record)}
           >
             <Tooltip title={t('common.delete')}>
-              <Button type="text" size="small" danger>
-                <span className="text-[10px] tracking-[0.08em]">DEL</span>
-              </Button>
+              <Button type="text" size="small" danger icon={<DeleteOutlined />} />
             </Tooltip>
           </Popconfirm>
         </span>
@@ -235,13 +232,7 @@ const Entries = () => {
           <div className={`${EYEBROW} mb-1.5`}>{t('entries.title')}</div>
           <div className={PAGE_TITLE}>{t('entries.title')}</div>
         </div>
-        <Button
-          type="primary"
-          size="large"
-          icon={<PlusOutlined />}
-          onClick={handleAdd}
-          className="!h-10 !font-sans !text-[13px] !tracking-[0.04em]"
-        >
+        <Button type="primary" size="large" icon={<PlusOutlined />} onClick={handleAdd}>
           {t('entries.addEntry')}
         </Button>
       </div>
@@ -293,29 +284,32 @@ const Entries = () => {
           placeholder={t('common.filter')}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="!bg-fill !max-w-[360px] !rounded-lg !border-none !font-sans"
+          className="max-w-[360px]"
         />
       </div>
 
       {/* ── Table ── */}
-      <Table
-        dataSource={entries}
-        columns={columns}
-        rowKey="_id"
-        loading={loading}
-        pagination={{ pageSize: 20, showSizeChanger: false, simple: isMobile }}
-        showSorterTooltip={false}
-        size="middle"
-        className="!bg-transparent !font-sans"
-        locale={{
-          emptyText: (
-            <Empty
-              description={<span className="text-ink-3 font-serif text-sm italic">{t('entries.noEntries')}</span>}
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
-          )
-        }}
-      />
+      <div className="-mx-2 overflow-x-auto sm:mx-0">
+        <Table
+          dataSource={entries}
+          columns={columns}
+          rowKey="_id"
+          loading={loading}
+          pagination={{ pageSize: 20, showSizeChanger: false, simple: isMobile }}
+          showSorterTooltip={false}
+          size="middle"
+          scroll={{ x: 720 }}
+          className="bg-transparent"
+          locale={{
+            emptyText: (
+              <Empty
+                description={<span className="text-ink-3 font-serif text-sm italic">{t('entries.noEntries')}</span>}
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+              />
+            )
+          }}
+        />
+      </div>
 
       <EntryForm
         open={modalOpen}
